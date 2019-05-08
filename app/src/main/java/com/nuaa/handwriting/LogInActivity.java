@@ -18,14 +18,22 @@ import com.nuaa.handwriting.model.HeaderModel;
 import com.nuaa.handwriting.model.PointBean;
 import com.nuaa.handwriting.model.VectorBean;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_ACT_VALUE;
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_CELL_PHONE;
+import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_URL;
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_USER_NAME;
 
 public class LogInActivity extends AppCompatActivity {
@@ -35,6 +43,8 @@ public class LogInActivity extends AppCompatActivity {
     private String mUserName;
 
     private String mCellphone;
+
+    private String mUrl;
 
     private TextView mCountTv;
 
@@ -46,11 +56,11 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        Log.d("LogInActivity","LogIn execute");
+        Log.d("LogInActivity", "LogIn execute");
 
         mUserName = getIntent().getStringExtra(BUNDLE_KEY_USER_NAME);
         mCellphone = getIntent().getStringExtra(BUNDLE_KEY_CELL_PHONE);
-
+        mUrl = getIntent().getStringExtra(BUNDLE_KEY_URL);
         mTouchView = findViewById(R.id.touch_view1);
         mCountTv = findViewById(R.id.tv_count);
 
@@ -84,75 +94,76 @@ public class LogInActivity extends AppCompatActivity {
 
         // 发送vectorList给服务端
         mDialog.show();
-        DataManager.getInstance().addList(mUserName, mCellphone, "方", true, vectorList)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<BaseResponse<EmptyResponse>>() {
+//        String url = "http://192.168.1.103:5000/login";
+        ArrayList<String> transList = new ArrayList<>();
+//        System.out.println("数据样本");
+        for (VectorBean bean : vectorList) {
+//            Log.e("cyw",bean.getVectorX()+ "!!!" + bean.getVectorY());
+
+            String data = String.valueOf(bean.getVectorX()) + "!" + String.valueOf(bean.getVectorY()) + "!" +
+                    String.valueOf(bean.getPress());
+            transList.add(data);
+        }
+        SendMessage(mUrl, mUserName, mCellphone, transList);
+    }
+
+    private void SendMessage(String url, final String userName, String passWord, ArrayList<String> list) {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder formBuilder = new FormBody.Builder();
+//        System.out.println("username"+ userName);
+        formBuilder.add("username", userName);
+        formBuilder.add("password", passWord);
+//        formBuilder.add("length", String.valueOf(list.size()));
+        String data = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            data = String.join("\n", list);
+        }
+        formBuilder.add("data", data);
+        Request request = new Request.Builder().url(url).post(formBuilder.build()).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void accept(final BaseResponse<EmptyResponse> response) {
-                        HeaderModel headerModel = response.getHeader();
-                        if (Constant.OK.equals(headerModel.getErrorCode())) {
-                            Toast.makeText(LogInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            if (mSubmitCount >= 1) {
-                                DataManager.getInstance().queryValue(mUserName, mCellphone)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Consumer<BaseResponse<String>>() {
-                                            @Override
-                                            public void accept(BaseResponse<String> responseBaseResponse) {
-                                                mDialog.dismiss();
-                                                Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                                intent.putExtra(BUNDLE_KEY_USER_NAME, mUserName);
-                                                intent.putExtra(BUNDLE_KEY_CELL_PHONE, mCellphone);
-                                                intent.putExtra(BUNDLE_KEY_ACT_VALUE, responseBaseResponse.getBody());
-                                                startActivity(intent);
-                                                /*if (TextUtils.isEmpty(responseBaseResponse.getBody())) {
-                                                    CustomDialogFragment fragment = CustomDialogFragment.getInstance(new CustomDialogFragment.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(String actValue) {
-                                                            Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                                            intent.putExtra(BUNDLE_KEY_USER_NAME, mUserName);
-                                                            intent.putExtra(BUNDLE_KEY_CELL_PHONE, mCellphone);
-                                                            intent.putExtra(BUNDLE_KEY_ACT_VALUE, actValue);
-                                                            startActivity(intent);
-                                                        }
-                                                    });
-                                                    fragment.setCancelable(false);
-                                                    fragment.show(getSupportFragmentManager(), "");
-                                                } else {
-                                                    Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                                    intent.putExtra(BUNDLE_KEY_USER_NAME, mUserName);
-                                                    intent.putExtra(BUNDLE_KEY_CELL_PHONE, mCellphone);
-                                                    intent.putExtra(BUNDLE_KEY_ACT_VALUE, responseBaseResponse.getBody());
-                                                    startActivity(intent);
-                                                }*/
-                                            }
-                                        }, new Consumer<Throwable>() {
-                                            @Override
-                                            public void accept(Throwable throwable) {
-                                                mDialog.dismiss();
-                                                Toast.makeText(LogInActivity.this, "网络错误:" + throwable.toString(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            } else {
-                                mDialog.dismiss();
-                                if (mTouchView != null) {
-                                    mTouchView.reset();
-                                }
-                                //mCountTv.setText("此时是第(" + ++mSubmitCount + " / 10)次书写");
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LogInActivity.this, "服务器错误或手机网络错误", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            mDialog.dismiss();
-                            Toast.makeText(LogInActivity.this, headerModel.getErrorMsg(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) {
-                        mDialog.dismiss();
-                        Toast.makeText(LogInActivity.this, "网络错误:" + throwable.toString(), Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                mDialog.cancel();//如果服务器有反应就取消对话框
+                final String res = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (res.equals("1")) {//服务器返回1说明登录成功
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(LogInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            startActivity(new Intent(LogInActivity.this, MainActivity.class));
+                        } else {//返回其他值说明出现了问题
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(LogInActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void reset(View view) {

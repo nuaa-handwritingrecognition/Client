@@ -77,7 +77,9 @@ public class TouchView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         currentX = event.getX();
+//        currentX = event.getRawX();
         currentY = event.getY();
+//        currentY = event.getRawY();
         currentPress = event.getPressure();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
