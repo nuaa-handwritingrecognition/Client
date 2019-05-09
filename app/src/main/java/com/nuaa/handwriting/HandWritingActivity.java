@@ -123,8 +123,10 @@ public class HandWritingActivity extends AppCompatActivity {
             data = String.join("\n", list);
         }
         formBuilder.add("data", data);
+
         Request request = new Request.Builder().url(url).post(formBuilder.build()).build();
         Call call = client.newCall(request);
+        System.out.println("cyw");
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

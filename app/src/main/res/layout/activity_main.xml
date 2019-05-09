@@ -16,17 +16,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="请输入用户名"
+        android:hint="请输入用户名(数字)"
         android:singleLine="true" />
 
     <EditText
-        android:id="@+id/et_cellphone"
+        android:id="@+id/et_serverIP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:hint="请输入手机号"
-        android:inputType="phone"
+        android:hint="请输入服务器IP"
         android:singleLine="true" />
+    <!--android:inputType="phone"-->
 
     <Button
         android:id="@+id/btn_write"

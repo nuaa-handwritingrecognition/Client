@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText mEditText;
 
-    private EditText mCellphoneEditText;
+    private EditText mServerIPEditText;
 
-    private String baseUrl = "http://192.168.1.103:5000";
+    private String baseUrl = "http://192.168.1.128:5000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mEditText = findViewById(R.id.et_username);
-        mCellphoneEditText = findViewById(R.id.et_cellphone);
+        mServerIPEditText = findViewById(R.id.et_serverIP);
     }
 
     public void onClick(View view) {
@@ -56,43 +56,43 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String cellphone = mCellphoneEditText.getText().toString();
-        if (TextUtils.isEmpty(cellphone)) {
-            mCellphoneEditText.requestFocus();
-            mCellphoneEditText.setError("手机号为空");
+        String serverIP = mServerIPEditText.getText().toString();
+        if (TextUtils.isEmpty(serverIP)) {
+            mServerIPEditText.requestFocus();
+            mServerIPEditText.setError("服务器IP为空");
             return;
         }
 
         switch (view.getId()) {
             case R.id.btn_write:
-                goWritePage(username, cellphone, baseUrl + "/register");
-//                checkIndentity(username, cellphone);
+                goWritePage(username, serverIP, serverIP + "/register");
+//                checkIndentity(username, serverIP);
                 break;
             case R.id.btn_log:
-//                checkIndentity_log(username, cellphone);
-                goLogPage(username, cellphone, baseUrl + "/login");
+//                checkIndentity_log(username, serverIP);
+                goLogPage(username, serverIP, serverIP + "/login");
                 break;
-            case R.id.btn_query:
-                Intent intent2 = new Intent(this, QueryHistoryActivity.class);
-                intent2.putExtra(BUNDLE_KEY_USER_NAME, username);
-                intent2.putExtra(BUNDLE_KEY_CELL_PHONE, cellphone);
-                startActivity(intent2);
-                break;
+//            case R.id.btn_query:
+//                Intent intent2 = new Intent(this, QueryHistoryActivity.class);
+//                intent2.putExtra(BUNDLE_KEY_USER_NAME, username);
+//                intent2.putExtra(BUNDLE_KEY_CELL_PHONE, serverIP);
+//                startActivity(intent2);
+//                break;
         }
     }
 
-    private void goWritePage(String username, String cellphone, String url) {
+    private void goWritePage(String username, String serverIP, String url) {
         Intent intent = new Intent(this, HandWritingActivity.class);
         intent.putExtra(BUNDLE_KEY_USER_NAME, username);
-        intent.putExtra(BUNDLE_KEY_CELL_PHONE, cellphone);
+        intent.putExtra(BUNDLE_KEY_CELL_PHONE, serverIP);
         intent.putExtra(BUNDLE_KEY_URL, url);
         startActivity(intent);
     }
 
-    private void goLogPage(String username, String cellphone, String url) {
+    private void goLogPage(String username, String serverIP, String url) {
         Intent intent = new Intent(this, LogInActivity.class);
         intent.putExtra(BUNDLE_KEY_USER_NAME, username);
-        intent.putExtra(BUNDLE_KEY_CELL_PHONE, cellphone);
+        intent.putExtra(BUNDLE_KEY_CELL_PHONE, serverIP);
         intent.putExtra(BUNDLE_KEY_URL, url);
         startActivity(intent);
     }
