@@ -13,7 +13,6 @@ import android.view.View;
 
 import com.nuaa.handwriting.model.PointBean;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,22 +34,6 @@ public class TouchView extends View {
 
     private MyTimerTask mTask;
 
-    public ArrayList<PointBean> getPointList() {
-        return mPointList;
-    }
-
-    public TouchView(Context context) {
-        super(context);
-    }
-
-    public TouchView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public TouchView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -63,12 +46,13 @@ public class TouchView extends View {
         countDownTimer = new CountDownTimer(3 * 1000, 20) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Log.e("xupeng", "mills" + millisUntilFinished);
+//                Log.e("xupeng", "mills" + millisUntilFinished);
             }
 
             @Override
             public void onFinish() {
-                Log.e("xupeng", "3s结束");
+//                Log.e("xupeng", "3s结束");
+//                String temp;
                 mTask.cancel();
             }
         };
@@ -77,9 +61,7 @@ public class TouchView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         currentX = event.getX();
-//        currentX = event.getRawX();
         currentY = event.getY();
-//        currentY = event.getRawY();
         currentPress = event.getPressure();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -121,9 +103,26 @@ public class TouchView extends View {
     private class MyTimerTask extends TimerTask {
         @Override
         public void run() {
-            Log.e("xupeng", "mytask");
             PointBean pointBean = new PointBean(currentX, currentY, currentPress);
             mPointList.add(pointBean);
         }
     }
+
+    public ArrayList<PointBean> getPointList() {
+        return mPointList;
+    }
+
+    public TouchView(Context context) {
+        super(context);
+    }
+
+    public TouchView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public TouchView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+
 }

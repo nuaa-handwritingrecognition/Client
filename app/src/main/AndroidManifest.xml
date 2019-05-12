@@ -29,15 +29,6 @@
         <activity
             android:name=".HandWritingActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".HandWritingCustomActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".QueryHistoryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".RecordActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
