@@ -1,5 +1,9 @@
 package com.nuaa.handwriting.model;
 
+
+/*
+ *  数据类型定义
+ * */
 public class PointBean {
 
     private float x;

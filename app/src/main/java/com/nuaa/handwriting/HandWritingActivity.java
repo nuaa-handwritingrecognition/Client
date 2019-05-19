@@ -25,6 +25,10 @@ import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_URL;
 import static com.nuaa.handwriting.constant.Constant.FAILURE;
 import static com.nuaa.handwriting.constant.Constant.SUCCESS;
 
+
+/*
+ *  注册界面后台逻辑
+ * */
 public class HandWritingActivity extends AppCompatActivity {
 
     private TouchView mTouchView;

@@ -12,6 +12,9 @@ import android.widget.EditText;
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_URL;
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_PHONE;
 
+/*
+ *  主界面后台逻辑
+ * */
 public class MainActivity extends AppCompatActivity {
 
     private EditText mEditText;

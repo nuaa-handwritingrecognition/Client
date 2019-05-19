@@ -24,7 +24,11 @@ import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_PHONE;
 import static com.nuaa.handwriting.constant.Constant.BUNDLE_KEY_URL;
 import static com.nuaa.handwriting.constant.Constant.FAILURE;
 import static com.nuaa.handwriting.constant.Constant.SUCCESS;
+import static com.nuaa.handwriting.constant.Constant.TRAINING;
 
+/*
+ *  登录界面后台逻辑
+ * */
 public class LogInActivity extends AppCompatActivity {
 
     private TouchView mTouchView;
@@ -133,6 +137,13 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(LogInActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else if (res.equals(TRAINING)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(LogInActivity.this, "模型正在训练，请耐心等待", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } else {

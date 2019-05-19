@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+ *  自定义 View 类
+ * */
 public class TouchView extends View {
 
     private float currentX;
