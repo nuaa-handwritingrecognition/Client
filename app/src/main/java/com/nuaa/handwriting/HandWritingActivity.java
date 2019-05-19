@@ -103,7 +103,7 @@ public class HandWritingActivity extends AppCompatActivity {
         Request request = new Request.Builder().url(url).post(formBuilder.build()).build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
-            //            长时间没响应也出出现Failure
+            // 长时间没响应也出出现Failure
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(new Runnable() {
@@ -167,6 +167,7 @@ public class HandWritingActivity extends AppCompatActivity {
             }
         });
     }
+
     public void reset(View view) {
         if (mTouchView != null) {
             mTouchView.reset();
